@@ -18,6 +18,7 @@
     <module>identity-service</module>
     <module>eureka-server</module>
       <module>profile-service</module>
+    <module>api-gateway</module>
   </modules>
 
   <properties>

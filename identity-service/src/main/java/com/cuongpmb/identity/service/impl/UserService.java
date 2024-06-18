@@ -3,6 +3,8 @@ package com.cuongpmb.identity.service.impl;
 import java.util.HashSet;
 import java.util.List;
 
+import com.cuongpmb.identity.mapper.ProfileMapper;
+import com.cuongpmb.identity.repository.httpclient.ProfileClient;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +28,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,8 @@ public class UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    ProfileClient profileClient;
+    ProfileMapper profileMapper;
 
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
@@ -48,6 +54,12 @@ public class UserService {
 
         try {
             user = userRepository.save(user);
+
+            var profileRequest = profileMapper.toProfileCreationRequest(request);
+            profileRequest.setUserId(user.getId());
+
+            var profileResponse = profileClient.createProfile( profileRequest);
+
         } catch (DataIntegrityViolationException exception){
             throw new AppException(ErrorCode.USER_EXISTED);
         }

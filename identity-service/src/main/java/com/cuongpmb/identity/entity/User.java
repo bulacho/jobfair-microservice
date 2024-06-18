@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -24,9 +23,6 @@ public class User {
     @Column(name = "username", unique = true, columnDefinition = "TEXT")
     String username;
     String password;
-    String firstName;
-    LocalDate dob;
-    String lastName;
 
     @ManyToMany
     Set<Role> roles;
